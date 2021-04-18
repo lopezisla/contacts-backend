@@ -18,6 +18,13 @@ exports.create = (req, res) => {
       message: "Contact email can not be empty",
     });
   }
+  const emailValid = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  const resultEmailValidation = emailValid.test(req.body.email);
+  if (!resultEmailValidation) {
+    return res.status(400).send({
+      message: "Contact email format incorrect",
+    });
+  }
   // Create a Contact
   const contact = new Contact({
     name: req.body.name,
@@ -81,6 +88,52 @@ exports.findOne = (req, res) => {
     });
 };
 
+// Find a single contact with a email
+exports.findOneByEmail = (req, res) => {
+    Contact.find({email: req.params.email})
+      .then((contact) => {
+        if (!contact) {
+          return res.status(404).send({
+            message: "Contact not found with email " + req.params.email,
+          });
+        }
+        res.send(contact);
+      })
+      .catch((err) => {
+        if (err.kind === "ObjectId") {
+          return res.status(404).send({
+            message: "Contact not found with email " + req.params.email,
+          });
+        }
+        return res.status(500).send({
+          message: "Error retrieving contact with email " + req.params.email,
+        });
+      });
+  };
+
+  // Find a single contact with a phone numbre
+exports.findOneByPhone = (req, res) => {
+    Contact.find({personalPhoneNumber: req.params.personalPhoneNumber})
+      .then((contact) => {
+        if (!contact) {
+          return res.status(404).send({
+            message: "Contact not found with phone numbre " + req.params.personalPhoneNumber,
+          });
+        }
+        res.send(contact);
+      })
+      .catch((err) => {
+        if (err.kind === "ObjectId") {
+          return res.status(404).send({
+            message: "Contact not found with phone numbre " + req.params.personalPhoneNumber,
+          });
+        }
+        return res.status(500).send({
+          message: "Error retrieving contact with phone numbre " + req.params.personalPhoneNumber,
+        });
+      });
+  };
+
 // Update a contact identified by the contactId in the request
 exports.update = (req, res) => {
   // Validate Request
@@ -97,6 +150,13 @@ exports.update = (req, res) => {
   if (!req.body.email) {
     return res.status(400).send({
       message: "Contact email can not be empty",
+    });
+  }
+  const emailValid = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  const resultEmailValidation = emailValid.test(req.body.email);
+  if (!resultEmailValidation) {
+    return res.status(400).send({
+      message: "Contact email format incorrect",
     });
   }
   // Find contact and update it with the request body

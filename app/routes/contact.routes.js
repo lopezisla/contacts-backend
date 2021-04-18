@@ -10,6 +10,12 @@ module.exports = (app) => {
     // Retrieve a single Contact with contactId
     app.get('/contacts/:contactId', contacts.findOne);
 
+    // Retrieve a single Contact with email
+    app.get('/email/:email', contacts.findOneByEmail);
+
+    // Retrieve a single Contact with email
+    app.get('/phone/:phone', contacts.findOneByPhone);
+
     // Update a Contact with contactId
     app.put('/contacts/:contactId', contacts.update);
 
